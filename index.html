@@ -28,6 +28,7 @@ peer.on('open', function (id) {
             conn.send('hi! '+peer.id);
             
             conn.on('data', function(data){
+              document.body.innerHTML += "<br/>"+data;
               console.log(data);
             });
           });
@@ -36,6 +37,7 @@ peer.on('open', function (id) {
   
 peer.on('connection', function(conn) {
   conn.on('data', function(data){
+    document.body.innerHTML += "<br/>"+data;
     console.log(data);
   });
 });
