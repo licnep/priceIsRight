@@ -26,6 +26,10 @@ peer.on('open', function (id) {
           conn.on('open', function(){
             // here you have conn.id
             conn.send('hi! '+peer.id);
+            
+            conn.on('data', function(data){
+              console.log(data);
+            });
           });
     }
 });
@@ -35,5 +39,9 @@ peer.on('connection', function(conn) {
     console.log(data);
   });
 });
+  
+function send(m) {
+   for (conn in peer.connections) {c = peer.connections[conn][0]; if (c) c.send(m);} 
+}
 
 </script>
