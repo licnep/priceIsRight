@@ -4,7 +4,19 @@
 
 <script>
 var peer = new Peer();
-console.log(peer._id);
+  
+  
+peer.on('open', function (id) {
+    // Workaround for peer.reconnect deleting previous id
+    if (peer.id === null) {
+        console.log('Received null id from peer open');
+        peer.id = lastPeerId;
+    } else {
+        lastPeerId = peer.id;
+    }
+
+    console.log('ID: ' + peer.id);
+});
   
 peer.on('connection', function(conn) {
   conn.on('data', function(data){
