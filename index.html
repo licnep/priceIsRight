@@ -3,6 +3,8 @@
 </head>
 
 <script>
+var server = new URLSearchParams(window.location.search).get('g');
+
 var peer = new Peer();
   
 peer.on('open', function (id) {
@@ -15,13 +17,13 @@ peer.on('open', function (id) {
     }
 
     console.log('ID: ' + peer.id);
-    var a = document.createElement('a');
-    a.innerHTML = "https://licnep.github.io/priceIsRight/?g="+peer.id;
-    a.href = "https://licnep.github.io/priceIsRight/?g="+peer.id;
-    document.body.appendChild(a);
-  
-    var server = new URLSearchParams(window.location.search).get('g');
-    if (server) {
+    
+    if (!server) {
+      var a = document.createElement('a');
+      a.innerHTML = "https://licnep.github.io/priceIsRight/?g="+peer.id;
+      a.href = "https://licnep.github.io/priceIsRight/?g="+peer.id;
+      document.body.appendChild(a);
+    } else {
       var conn = peer.connect(server);
           conn.on('open', function(){
             // here you have conn.id
