@@ -36,7 +36,9 @@ peer.on('open', function (id) {
               if (data.startsWith("product:")) {
                 var product = JSON.parse(data.split("product:")[1])
                 console.log(product);
-                document.write('<img src="'+product["Image"][0]+'"></img>');
+                for (img of product["Image"]) {
+                  document.write('<img src="'+img+'"></img>');
+                }
               }
             });
           });
