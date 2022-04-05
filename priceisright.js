@@ -4,7 +4,8 @@ var linkPartita = window.location + "?g=" + id;
 var nOggetti = 5;
 config = {"host":"144.91.126.13","port":9000,"path":"/peerjs"};
 var peer = new Peer(id, config); //new Peer(id);
-window.nomeGiocatore = "Pluto";
+window.nomeGiocatore = id;
+document.getElementById('nomeGiocatore').value = id;
 
 /*
 function handleError() {
@@ -28,26 +29,28 @@ peer.on('open', function (id) {
     }*/
 
     console.log('ID: ' + peer.id);
-    
-    if (server) {
-      var conn = peer.connect(server, {metadata:{"nomeGiocatore":window.nomeGiocatore}} );
-          conn.on('open', function(){
-            // here you have conn.id
-            conn.send('hi! '+peer.id);
-            
-            conn.on('data', function(data){
-              //messaggi ricevuti dal client
-              //document.body.innerHTML += "<br/>"+data;
-              console.log(data);
-              if (data.startsWith("product:")) {
-                var product = JSON.parse(data.split("product:")[1])
-                console.log(product);
-                mostraOggettoMisterioso(product);
-              }
-            });
-          });
-    }
 });
+
+function joinServer() {
+    if (server) {
+        var conn = peer.connect(server, {metadata:{"nomeGiocatore":window.nomeGiocatore}} );
+            conn.on('open', function(){
+              // here you have conn.id
+              conn.send('hi! '+peer.id);
+              
+              conn.on('data', function(data){
+                //messaggi ricevuti dal client
+                //document.body.innerHTML += "<br/>"+data;
+                console.log(data);
+                if (data.startsWith("product:")) {
+                  var product = JSON.parse(data.split("product:")[1])
+                  console.log(product);
+                  mostraOggettoMisterioso(product);
+                }
+              });
+            });
+      }
+}
   
 //server (colui che riceve le connessioni)
 peer.on('connection', function(conn) {

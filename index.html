@@ -2,16 +2,24 @@
   <script src="https://unpkg.com/peerjs@1.3.2/dist/peerjs.min.js"></script>
 </head>
 <body>
-  <button onclick="clickCreaPartita()">Crea Partita</button>
-  Link da condividere: <a href="#" id="linkPartita" target="_blank"></a>
-  <h2>Giocatori:</h2>
-  <ul id="listaGiocatori"></ul>
-  <div id="oggettoMisterioso">
+  <label>Nome giocatore:</label><input type="text" id="nomeGiocatore" value=""></input>
+  <div class="soloPerHost">
+    <button onclick="clickCreaPartita()">Crea Partita</button>
+    Link da condividere: <a href="#" id="linkPartita" target="_blank"></a>
+    <h2>Giocatori:</h2>
+    <ul id="listaGiocatori"></ul>
     <button onclick="clickAvviaPartita()">Avvia Partita</button>
   </div>
+  <div class="soloPerGuest" style="display: none">
+    <button onclick="clickUniscitiAllaPartita()">Unisciti alla partita</button>
+  </div>  
+  <div id="oggettoMisterioso">
+  </div>
   <label>Puntata:</label><input id="puntata" type="text" value="0.00" onkeyup="clickInviaPuntata()"></input>
-  <button onclick="onTempoScaduto()">Tempo Scaduto</button>
-  <button onclick="clickRiavviaPartita()">Riavvia Partita</button>
+  <div class="soloPerHost">
+    <button onclick="onTempoScaduto()">Tempo Scaduto</button>
+    <button onclick="clickRiavviaPartita()">Riavvia Partita</button>
+  </div>
 </body>
 <script>
 
@@ -28,6 +36,12 @@ if (server) {
     //l'utente ha cliccato un link per unirsi alla partita
     //TODO: mostrare un input per inserire il nome giocatore e confermare
     window.sonoUnOspite = true;
+    for (e of document.getElementsByClassName('soloPerHost')) {
+      e.style.display = 'none';
+    }
+    for (e of document.getElementsByClassName('soloPerGuest')) {
+      e.style.display = 'block';
+    }
 } else {
     //crea una nuova partita
     //TODO: mostrare l'input per inserire il nome giocatore e il numero di oggetti
@@ -37,7 +51,7 @@ if (server) {
 //va chiamata quando l'utente clicca crea una nuova partita
 function clickCreaPartita(nomeGiocatore, numeroOggetti = 5) {
   window.nOggetti = numeroOggetti;
-  window.nomeGiocatore = nomeGiocatore || id;
+  window.nomeGiocatore = document.getElementById('nomeGiocatore').value;
   window.turno = 0;
   window.listaGiocatori = new Array();
   aggiungiGiocatore({"nome": window.nomeGiocatore, "id": id, "punteggio": 0});
@@ -60,13 +74,19 @@ function aggiungiGiocatore(giocatore) {
   //TODO: aggiungere il giocatore alla lista visiva dei giocatori 
   window.listaGiocatori.push(giocatore);
   e = document.createElement('li')
-  e.innerHTML = giocatore["nome"] + ", id:" + giocatore["id"] + ", errore:" + giocatore["punteggio"] + "%";
+  e.innerHTML = giocatore["nome"] + ", errore:" + giocatore["punteggio"] + "%";
   document.getElementById('listaGiocatori').appendChild(e);
 }
 
 //va chiamata quando l'utente host clicca "avvia partita"
 function clickAvviaPartita() {
   prossimoRound();
+}
+
+//va chiamata quando un utente guest clicca "unisciti alla partita"
+function clickUniscitiAllaPartita() {
+  window.nomeGiocatore = document.getElementById('nomeGiocatore').value;
+  joinServer();
 }
 
 //Genera un oggetto casuale e lo invia a tutti i giocatori
